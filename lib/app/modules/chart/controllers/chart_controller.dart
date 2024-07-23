@@ -1,41 +1,38 @@
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Model untuk representasi item dalam keranjang belanja
-class CartItem {
-  final String name;
-  final int price;
-  int quantity;
+class ChartController extends GetxController {
+  var cartItems = <CartItem>[].obs;
 
-  CartItem({required this.name, required this.price, this.quantity = 1});
+  Future<String> fetchUserId() async {
+  final prefs = await SharedPreferences.getInstance();
+  final userId = prefs.getInt('userId')?.toString() ?? 'Unknown'; // Konversi ke String
+  return userId;
 }
 
-// Controller untuk manajemen keranjang belanja
-class ChartController extends GetxController {
-  // List untuk menyimpan item-item dalam keranjang belanja
-  final RxList cartItems = [].obs;
-
-  // Fungsi untuk menambah item ke dalam keranjang belanja
-  void addItem(CartItem item) {
-    // Cek apakah item sudah ada dalam keranjang
-    int index = cartItems.indexWhere((element) => element.name == item.name);
-    if (index != -1) {
-      cartItems[index].quantity++;
-    } else {
-      cartItems.add(item);
-    }
+  int calculateTotalPrice() {
+    return cartItems.fold(0, (sum, item) => sum + (item.price * item.quantity));
   }
 
-  // Fungsi untuk menghapus item dari keranjang belanja berdasarkan index
+  void addItem(CartItem item) {
+    cartItems.add(item);
+  }
+
   void removeItem(int index) {
     cartItems.removeAt(index);
   }
+}
+class CartItem {
+  final int id;
+  final String name;
+  final int price;
+  final int quantity;
 
-  // Fungsi untuk menghitung total harga semua item dalam keranjang belanja
-  int? calculateTotalPrice() {
-    int? totalPrice = 0;
-    for (var item in cartItems) {
-      // totalPrice += item.price * item.quantity;
-    }
-    return totalPrice;
-  }
+  CartItem({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.quantity,
+  });
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mebelmutiara/app/modules/commons/API/services.dart';
 import 'package:mebelmutiara/app/modules/database/MdlBarang.dart';
+
 class ItemdetailController extends GetxController {
   final count = 1.obs; // Default count value
   final TextEditingController quantityController = TextEditingController();
@@ -21,7 +22,8 @@ class ItemdetailController extends GetxController {
   }
 
   int calculateTotalPrice() {
-    return count.value * 100000; // Price per item
+    double price = double.tryParse(item.value.harga ?? '0') ?? 0.0;
+    return (count.value * price).toInt(); // Convert to int
   }
 
   int getTotalPrice() {
@@ -34,7 +36,7 @@ class ItemdetailController extends GetxController {
     super.onClose();
   }
 
-  Future<void> fetchItemDetails(int itemId) async {
+  Future<void> fetchItemDetails(int itemId, int tipeDetailId) async {
     try {
       isLoading(true); // Set loading status to true
       var fetchedBarang = await _apiService.fetchBarang();
@@ -45,8 +47,12 @@ class ItemdetailController extends GetxController {
           orElse: () => Results(), // Default if not found
         );
         if (foundItem != null) {
-          // Get the first TipeDetails for the item
-          item.value = foundItem.tipeDetails?.first ?? TipeDetails();
+          // Find the specific TipeDetails by tipeDetailId
+          item.value = foundItem.tipeDetails?.firstWhere(
+                (detail) => detail.tipeId == tipeDetailId,
+                orElse: () => TipeDetails(),
+              ) ??
+              TipeDetails();
         }
       }
     } catch (e) {

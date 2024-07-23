@@ -1,5 +1,5 @@
 class GetBarang {
-  String? statusCode;
+ String? statusCode;
   String? responses;
   int? totalResults;
   List<Results>? results;
@@ -66,14 +66,16 @@ class TipeDetails {
   int? tipeId;
   String? namaTipe;
   String? ukuran;
+  String? harga;
   int? stok;
 
-  TipeDetails({this.tipeId, this.namaTipe, this.ukuran, this.stok});
+  TipeDetails({this.tipeId, this.namaTipe, this.ukuran, this.harga, this.stok});
 
   TipeDetails.fromJson(Map<String, dynamic> json) {
     tipeId = json['tipe_id'];
     namaTipe = json['nama_tipe'];
     ukuran = json['ukuran'];
+    harga = json['harga'];
     stok = json['stok'];
   }
 
@@ -82,6 +84,7 @@ class TipeDetails {
     data['tipe_id'] = this.tipeId;
     data['nama_tipe'] = this.namaTipe;
     data['ukuran'] = this.ukuran;
+    data['harga'] = this.harga;
     data['stok'] = this.stok;
     return data;
   }

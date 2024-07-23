@@ -9,11 +9,10 @@ import 'package:mebelmutiara/app/modules/database/MdlLogin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class services {
- 
  Future<String> login(String email, String password) async {
     try {
       final response = await http.post(
-        Uri.parse(baseURL+loginUrl),
+        Uri.parse(baseURL + loginUrl),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -27,9 +26,10 @@ class services {
         final loginData = MdlLogin.fromJson(jsonDecode(response.body));
 
         if (loginData.success == true && loginData.data != null) {
-          // Simpan token di shared preferences
+          // Simpan token dan ID di shared preferences
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', loginData.data!.token ?? '');
+          await prefs.setInt('userId', loginData.data!.id ?? 0);
 
           return loginData.data!.token ?? '';
         } else {
@@ -47,6 +47,12 @@ class services {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
   }
+
+  Future<int?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('userId');
+  }
+
   // ================================Get Barang===============================
 
   Future<GetBarang?> fetchBarang() async {

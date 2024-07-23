@@ -8,6 +8,7 @@ import '../controllers/detailprodak_controller.dart';
 class DetailprodakView extends GetView<DetailprodakController> {
   DetailprodakView({Key? key}) : super(key: key);
   final DetailprodakController controller = Get.put(DetailprodakController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,9 +37,8 @@ class DetailprodakView extends GetView<DetailprodakController> {
         centerTitle: false,
       ),
       body: Obx(() {
-        // Mengambil data dari controller
         var item = controller.barang.value.results?.first; // Ambil item pertama untuk ditampilkan
-        
+
         if (item == null) {
           return Center(child: Text('No data available')); // Menampilkan pesan jika tidak ada data
         }
@@ -58,9 +58,8 @@ class DetailprodakView extends GetView<DetailprodakController> {
               return GestureDetector(
                 onTap: () {
                   // Aksi saat item ditekan
-                 if (tipe != null && item.id != null) {
-                  int itemId = item.id!;
-                  Get.toNamed('/itemdetail', arguments: itemId);
+                  if (tipe != null && item.id != null) {
+                    Get.toNamed('/itemdetail', arguments: {'itemId': item.id, 'tipeDetailId': tipe.tipeId});
                   }
                 },
                 child: Card(
